@@ -1,0 +1,41 @@
+DATA SEGMENT
+ ARRAY DB 10H,22H,02H,55H,32H,21H
+ TOTAL DB $-ARRAY
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      MOV BL,TOTAL
+      DEC BL
+
+LOOP2:
+      MOV CL,BL
+      MOV SI,00H
+
+LOOP1:
+      MOV AL,ARRAY[SI]
+      INC SI
+
+      CMP AL,ARRAY[SI]
+      JLE NEXT
+
+      XCHG AL,ARRAY[SI]
+      MOV ARRAY[SI-1],AL
+
+NEXT:
+      LOOP LOOP1
+
+      DEC BL
+      JNZ LOOP2
+
+      MOV AH,4CH
+      INT 21H
+
+      CODE ENDS
+      END START
+

@@ -1,0 +1,57 @@
+PUT MACRO TEMP
+ MOV DL,TEMP
+ MOV AH,02H
+ INT 21H
+ENDM
+
+
+DATA SEGMENT
+ M1 DB 0AH,0DH,'CURRENT SYSTEM TIME IS : $'
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      LEA DX,M1
+      MOV AH,09H
+      INT 21H
+
+      MOV AH,2CH
+      INT 21H
+
+      MOV AL,CH
+      CALL DISPLAY
+
+      PUT ":"
+
+      MOV AL,CL
+      CALL DISPLAY
+
+      PUT ":"
+
+      MOV AL,DH
+      CALL DISPLAY
+
+      MOV AH,4CH
+      INT 21H
+
+DISPLAY PROC
+
+       MOV AH,00H
+       MOV BL,0AH
+       DIV BL
+       ADD AX,3030H
+       MOV BX,AX
+       PUT BL
+       PUT BH
+       RET
+DISPLAY ENDP
+
+      CODE ENDS
+      END START
+
+      

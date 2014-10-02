@@ -1,0 +1,50 @@
+PRINT MACRO TEMP,NUM
+  LEA DX,TEMP
+  MOV AH,NUM
+  INT 21H
+ENDM
+
+DATA SEGMENT
+  M1 DB 'WHAT IS YOUR NAME.? $'
+  STR DB 40
+      DB 00
+      DB 40
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      MOV AH,07H
+      MOV AL,00H
+      MOV BH,0FH
+      MOV BL,00H
+      MOV CL,00H
+      MOV CH,00H
+      MOV DH,24H
+      MOV DL,79H
+      INT 10H
+
+      MOV AH,02H
+      MOV BH,00H
+      MOV DH,00H
+      MOV DL,00H
+      INT 10H
+
+      MOV AH,02H
+      MOV DH,0AH
+      MOV DL,05H
+      INT 10H
+
+      PRINT M1,09H
+
+      PRINT STR,0AH
+
+      MOV AH,4CH
+      INT 21H
+
+      CODE ENDS
+      END START

@@ -1,0 +1,41 @@
+DATA SEGMENT
+ N DB 03H
+ RES DB ?
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      MOV CL,N
+      MOV AH,00H
+
+      CALL FACT
+
+      MOV RES,AL
+      MOV AH,4CH
+      INT 21H
+
+FACT PROC NEAR
+     CMP CL,01H
+     JE NEXT
+
+     PUSH CX
+     DEC CX
+
+     CALL FACT
+
+     POP CX
+     MUL CX
+     RET
+
+NEXT:
+     MOV AL,01H
+     RET
+FACT ENDP
+
+     CODE ENDS
+     END START

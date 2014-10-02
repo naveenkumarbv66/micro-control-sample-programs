@@ -1,0 +1,71 @@
+PRINT MACRO TEMP,NUM
+  LEA DX,TEMP
+  MOV AH,NUM
+  INT 21H
+ENDM
+
+DATA SEGMENT
+ M1 DB 0AH,0DH,'ENTER STRING : $'
+ M2 DB 0AH,0DH,'REVERSED STRING : $'
+ M3 DB 0AH,0DH,'GIVEN STRING IS PALINDROME....$'
+ M4 DB 0AH,0DH,'GIVEN STRING IS NOT PALINDROME....$'
+ STR DB 50
+     DB 00
+     DB 50
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      PRINT M1,09H
+
+      PRINT STR,0AH
+
+      PRINT M2,09H
+
+      LEA BX,STR+2
+      MOV CH,00H
+      MOV CL,STR+1
+      MOV DI,CX
+      DEC DI
+      PUSH CX
+
+LOOP1:
+      MOV DL,[BX+DI]
+      MOV AH,02H
+      INT 21H
+      DEC DI
+      LOOP LOOP1
+
+      MOV SI,00H
+      POP CX
+      MOV DI,CX
+      DEC DI
+
+LOOP2:
+      MOV AL,[BX+SI]
+      MOV AH,[BX+DI]
+
+      CMP AL,AH
+      JNE NOTP
+
+      INC SI
+      DEC DI
+      LOOP LOOP2
+
+      PRINT M3,09H
+      JMP STOP
+
+NOTP:
+      PRINT M4,09H
+
+STOP:
+      MOV AH,4CH
+      INT 21H
+
+      CODE ENDS
+      END START

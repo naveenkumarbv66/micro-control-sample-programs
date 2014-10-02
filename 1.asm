@@ -1,0 +1,64 @@
+DATA SEGMENT
+ ARRAY DW 0012H,0023H,0034H,0045H,0056H
+ TOTAL DW ($-ARRAY)/2
+ KEY DW 2H
+ M1 DB 0AH,0DH,'ELEMENT FOUND...$'
+ M2 DB 0AH,0DH,'ELEMENT NOT FOUND.......$'
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      MOV BX,KEY
+      MOV CX,01H
+      MOV DX,TOTAL
+
+LOOP1:
+      CMP CX,DX
+      JG NFOND
+
+      MOV AX,CX
+      ADD AX,DX
+      SHR AX,01H
+      MOV BP,AX
+      DEC BP
+      ADD BP,BP
+
+      CMP BX,ARRAY[BP]
+      JGE NEXT
+
+      MOV DX,AX
+      DEC DX
+      JMP LOOP1
+
+NEXT:
+      JE FOUND
+
+      MOV CX,AX
+      INC CX
+      JMP LOOP1
+
+NFOND:
+      LEA DX,M2
+      MOV AH,09H
+      INT 21H
+      JMP STOP
+
+FOUND:
+      LEA DX,M1
+      MOV AH,09H
+      INT 21H
+
+STOP:
+      MOV AH,4CH
+      INT 21H
+
+      CODE ENDS
+      END START
+
+      
+

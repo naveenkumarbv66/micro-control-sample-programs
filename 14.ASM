@@ -1,0 +1,82 @@
+PRINT MACRO TEMP
+  LEA DX,TEMP
+  MOV AH,09H
+  INT 21H
+ENDM
+
+DATA SEGMENT
+  M1 DB 0AH,0DH,'ENTER ROW NUMBER : $'
+  M2 DB 0AH,0DH,'ENTER COL NUMBER : $'
+  M3 DB 0AH,0DH,'PRESS ANY KEY TO QUIT...$'
+  ROW DB ?
+  COL DB ?
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+
+START:
+      MOV AX,DATA
+      MOV DS,AX
+
+      MOV AH,07H
+      MOV AL,00H
+      MOV BH,0FH
+      MOV BL,00H
+      MOV CH,00H
+      MOV CL,00H
+      MOV DH,24H
+      MOV DL,79H
+      INT 10H
+
+      MOV AH,02H
+      MOV BH,00H
+      MOV DH,00H
+      MOV DL,00H
+      INT 10H
+
+      PRINT M1
+
+      CALL READ
+      MOV ROW,AL
+
+      PRINT M2
+
+      CALL READ
+      MOV COL,AL
+
+      PRINT M3
+        
+      MOV AH,02H
+      MOV BH,00H
+      MOV DH,ROW
+      MOV DL,COL
+      INT 10H
+
+      MOV AH,08H
+      INT 21H
+
+
+
+      MOV AH,4CH
+      INT 21H
+
+READ PROC
+
+     MOV AH,01H
+     INT 21H
+
+     AND AL,0FH
+     MOV BL,AL
+
+     MOV AH,01H
+     INT 21H
+     AND AL,0FH
+
+     MOV AH,BL
+     AAD
+     RET
+READ ENDP
+
+     CODE ENDS
+     END START
